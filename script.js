@@ -1,19 +1,19 @@
 const jadwalData = [
-    { hari: "Senin", waktu: "09:50 - 11:30", matkul: "Kimia Industri Pertanian", ruang: "Ruang Culan", dosen: ["TANWIRUL MILLATI", "RINI HUSTIANY", "SUSI"] },
-    { hari: "Senin", waktu: "14:50 - 16:30", matkul: "Pengantar Teknologi Pertanian", ruang: "Ruang Culan", dosen: ["TANWIRUL MILLATI", "AGUNG NUGROHO", "HISYAM MUSTAFA AL HAKIM"] },
-    { hari: "Selasa", waktu: "08:00 - 09:40", matkul: "Matematika", ruang: "Ruang Culan", dosen: ["NISA MUFIDAH", "A. NI'MATUL CHURRIYA", "FADHILAH DHANI SANTIKA FALAH"] },
-    { hari: "Selasa", waktu: "09:50 - 11:30", matkul: "Praktikum Kimia Industri Pertanian", ruang: "Lab. TIP", dosen: ["TANWIRUL MILLATI", "RINI HUSTIANY", "SUSI"] },
-    { hari: "Selasa", waktu: "14:50 - 16:30", matkul: "Pengantar Ilmu Ekonomi", ruang: "Ruang Kenanga", dosen: ["NINA BUDIWATI", "SORAYA NOORMALASARI"] },
-    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Kristen Protestan", ruang: "Ruang Kapul 1", dosen: ["Pdt. Dr. Keloso S Ugak, S.Th."] },
-    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Kristen Katolik", ruang: "Ruang Kapul 2", dosen: ["Drs. Petrus B. Kolin"] },
-    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Hindu", ruang: "Ruang Kalalayu", dosen: ["Nyoman Sukadane"] },
-    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Budha", ruang: "Ruang Kasturi 2", dosen: ["Narmin, S.Ag."] },
-    { hari: "Rabu", waktu: "09:50 - 11:30", matkul: "Dasar Rekayasa Bioproses", ruang: "Ruang Sarigading", dosen: ["ALIA RAHMI", "LYA AGUSTINA", "NOVIANTI ADI ROHMANNA"] },
-    { hari: "Rabu", waktu: "13:00 - 14:40", matkul: "Pancasila", ruang: "Ruang Pampaken", dosen: ["SUROTO", "HABIBAH PIDI ROHMATU"] },
-    { hari: "Kamis", waktu: "08:00 - 09:40", matkul: "Pendidikan Agama Islam", ruang: "Ruang Pampaken", dosen: ["MUHAMMAD ROSDAL TAWAKKAL"] },
-    { hari: "Kamis", waktu: "13:00 - 14:40", matkul: "Bahasa Inggris I", ruang: "Ruang Kapul 2", dosen: ["DEWI FITRIYANTI, S.P., M.P.", "ALIA RAHMI, S.T.P., M.EngSc., Ph.D."], clash: true },
-    { hari: "Kamis", waktu: "13:00 - 14:40", matkul: "Praktikum Matematika", ruang: "Ruang Sarigading", dosen: ["NISA MUFIDAH", "A. NI'MATUL CHURRIYA", "FADHILAH DHANI SANTIKA FALAH"], clash: true },
-    { hari: "Kamis", waktu: "16:40 - 18:20", matkul: "Bahasa Indonesia", ruang: "Ruang Pampaken", dosen: ["ISNU WAHYONO"] }
+    { hari: "Senin", waktu: "09:50 - 11:30", matkul: "Kimia Industri Pertanian", ruang: "Ruang Culan", dosen: ["TANWIRUL MILLATI *", "RINI HUSTIANY", "SUSI"] },
+    { hari: "Senin", waktu: "14:50 - 16:30", matkul: "Pengantar Teknologi Pertanian", ruang: "Ruang Culan", dosen: ["AGUNG NUGROHO *", "TANWIRUL MILLATI", "HISYAM MUSTAFA AL HAKIM"] },
+    { hari: "Selasa", waktu: "08:00 - 09:40", matkul: "Matematika", ruang: "Ruang Culan", dosen: ["FADHILAH DHANI SANTIKA FALAH", "NISA MUFIDAH"] },
+    { hari: "Selasa", waktu: "09:50 - 11:30", matkul: "Praktikum Kimia Industri Pertanian", ruang: "Lab. TIP", dosen: ["TANWIRUL MILLATI *", "RINI HUSTIANY", "SUSI"] },
+    { hari: "Selasa", waktu: "14:50 - 16:30", matkul: "Pengantar Ilmu Ekonomi", ruang: "Ruang Kenanga", dosen: ["NINA BUDIWATI *", "SORAYA NOORMALASARI"] },
+    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Kristen Protestan", ruang: "Ruang Kapul 1", dosen: ["Pdt. Dr. Keloso S Ugak, S.Th. *"] },
+    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Kristen Katolik", ruang: "Ruang Kapul 2", dosen: ["Drs. Petrus B. Kolin *"] },
+    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Hindu", ruang: "Ruang Kalalayu", dosen: ["Nyoman Sukadane *"] },
+    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Budha", ruang: "Ruang Kasturi 2", dosen: ["Narmin, S.Ag. *"] },
+    { hari: "Rabu", waktu: "09:50 - 11:30", matkul: "Dasar Rekayasa Bioproses", ruang: "Ruang Sarigading", dosen: ["ALIA RAHMI *", "LYA AGUSTINA", "NOVIANTI ADI ROHMANNA"] },
+    { hari: "Rabu", waktu: "13:00 - 14:40", matkul: "Pancasila", ruang: "Ruang Pampaken", dosen: ["HABIBAH PIDI ROHMATU *", "SUROTO"] },
+    { hari: "Kamis", waktu: "08:00 - 09:40", matkul: "Pendidikan Agama Islam", ruang: "Ruang Pampaken", dosen: ["MUHAMMAD ROSDAL TAWAKKAL *"] },
+    { hari: "Kamis", waktu: "13:00 - 14:40", matkul: "Bahasa Inggris I (Semester Atas!)", ruang: "Ruang Kapul 2", dosen: ["DEWI FITRIYANTI", "ALIA RAHMI"], clash: true },
+    { hari: "Kamis", waktu: "13:00 - 14:40", matkul: "Praktikum Matematika", ruang: "Ruang Sarigading", dosen: ["FADHILAH DHANI SANTIKA FALAH", "NISA MUFIDAH"], clash: true },
+    { hari: "Kamis", waktu: "16:40 - 18:20", matkul: "Bahasa Indonesia", ruang: "Ruang Pampaken", dosen: ["ISNU WAHYONO *"] }
 ];
 
 // Logika Navigasi View
