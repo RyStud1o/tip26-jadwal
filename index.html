@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Jadwal TIP'26</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-content">
+            <div class="brand-container">
+                <img src="images (9).jpg" alt="Logo ULM" class="brand-logo">
+                <div class="brand-text">
+                    <span class="brand-title">Universitas Lambung Mangkurat</span>
+                    <span class="brand-subtitle">Prodi Teknologi Industri Pertanian</span>
+                </div>
+            </div>
+            <button id="themeToggle" class="theme-btn" title="Ganti Tema">🌙</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- ================= DASHBOARD VIEW ================= -->
+        <div id="dashboardView" class="view-section active">
+            <div class="dashboard-header">
+                <h1>Halo, Mahasiswa TIP'26! 👋</h1>
+                <p>Selamat datang di Portal Jadwal TIP Angkatan 2026.</p>
+            </div>
+
+            <!-- Widget Jadwal Mendatang -->
+            <div class="upcoming-widget">
+                <div class="widget-header">
+                    <h3>⏳ Jadwal Kuliah Terdekat (Hari Ini)</h3>
+                </div>
+                <div id="upcomingClassContainer" class="widget-body">
+                    <!-- Diisi oleh JavaScript -->
+                </div>
+            </div>
+
+            <div class="section-title-container">
+                <h2>Pilih Semester</h2>
+                <div class="line"></div>
+            </div>
+
+            <div class="semester-grid">
+                <button class="semester-btn active" onclick="openSemester(1)">
+                    <span class="sem-num">1</span>
+                    <span class="sem-text">Semester 1</span>
+                </button>
+                <button class="semester-btn" onclick="openSemester(2)">
+                    <span class="sem-num">2</span>
+                    <span class="sem-text">Semester 2</span>
+                </button>
+                <button class="semester-btn" onclick="openSemester(3)">
+                    <span class="sem-num">3</span>
+                    <span class="sem-text">Semester 3</span>
+                </button>
+                <button class="semester-btn" onclick="openSemester(4)">
+                    <span class="sem-num">4</span>
+                    <span class="sem-text">Semester 4</span>
+                </button>
+                <button class="semester-btn" onclick="openSemester(5)">
+                    <span class="sem-num">5</span>
+                    <span class="sem-text">Semester 5</span>
+                </button>
+                <button class="semester-btn" onclick="openSemester(6)">
+                    <span class="sem-num">6</span>
+                    <span class="sem-text">Semester 6</span>
+                </button>
+                <button class="semester-btn" onclick="openSemester(7)">
+                    <span class="sem-num">7</span>
+                    <span class="sem-text">Semester 7</span>
+                </button>
+                <button class="semester-btn" onclick="openSemester(8)">
+                    <span class="sem-num">8</span>
+                    <span class="sem-text">Semester 8</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= SEMESTER 1 VIEW ================= -->
+        <div id="scheduleView" class="view-section">
+            <button class="back-btn" onclick="goHome()">⬅ Kembali ke Dashboard</button>
+            
+            <div class="page-header">
+                <h1>Jadwal Semester 1</h1>
+                <p>Kelas F - Semester Ganjil TA 2026/2027</p>
+                <span class="badge-date">24 Agustus – 11 Desember 2026</span>
+            </div>
+
+            <div class="tools-container">
+                <input type="text" id="searchInput" class="search-bar" placeholder="Cari mata kuliah atau nama dosen...">
+                
+                <div class="filter-tabs" id="filterTabs">
+                    <button class="filter-btn active" data-hari="Semua">Semua Hari</button>
+                    <button class="filter-btn" data-hari="Senin">Senin</button>
+                    <button class="filter-btn" data-hari="Selasa">Selasa</button>
+                    <button class="filter-btn" data-hari="Rabu">Rabu</button>
+                    <button class="filter-btn" data-hari="Kamis">Kamis</button>
+                </div>
+            </div>
+
+            <div class="schedule-grid" id="scheduleContainer">
+                <!-- Diisi oleh JavaScript -->
+            </div>
+        </div>
+
+        <!-- ================= COMING SOON VIEW ================= -->
+        <div id="comingSoonView" class="view-section">
+            <button class="back-btn" onclick="goHome()">⬅ Kembali ke Dashboard</button>
+            <div class="empty-state">
+                <h2 style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;">🚧 Coming Soon 🚧</h2>
+                <p>Jadwal perkuliahan untuk semester ini belum tersedia atau kamu belum memprogram KRS.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 - Teknologi Industri Pertanian ULM 26'</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
