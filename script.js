@@ -11,7 +11,6 @@ const jadwalData = [
     { hari: "Rabu", waktu: "09:50 - 11:30", matkul: "Dasar Rekayasa Bioproses", ruang: "Ruang Sarigading", dosen: ["ALIA RAHMI *", "LYA AGUSTINA", "NOVIANTI ADI ROHMANNA"] },
     { hari: "Rabu", waktu: "13:00 - 14:40", matkul: "Pancasila", ruang: "Ruang Pampaken", dosen: ["HABIBAH PIDI ROHMATU *", "SUROTO"] },
     { hari: "Kamis", waktu: "08:00 - 09:40", matkul: "Pendidikan Agama Islam", ruang: "Ruang Pampaken", dosen: ["MUHAMMAD ROSDAL TAWAKKAL *"] },
-    { hari: "Kamis", waktu: "13:00 - 14:40", matkul: "Bahasa Inggris I (Semester Atas!)", ruang: "Ruang Kapul 2", dosen: ["DEWI FITRIYANTI", "ALIA RAHMI"], clash: true },
     { hari: "Kamis", waktu: "13:00 - 14:40", matkul: "Praktikum Matematika", ruang: "Ruang Sarigading", dosen: ["FADHILAH DHANI SANTIKA FALAH", "NISA MUFIDAH"], clash: true },
     { hari: "Kamis", waktu: "16:40 - 18:20", matkul: "Bahasa Indonesia", ruang: "Ruang Pampaken", dosen: ["ISNU WAHYONO *"] }
 ];
