@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM BREACHED</title>
+    <style>
+        /* CSS langsung disematkan di sini */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+
+        /* Canvas untuk efek hujan kode (Matrix) */
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.75); /* Memberi sedikit bayangan gelap di atas canvas */
+        }
+
+        /* Efek Glitch untuk Judul Utama */
+        .glitch {
+            font-size: 4rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            position: relative;
+            color: #fff;
+            margin-bottom: 30px;
+            text-shadow: 0.05em 0 0 #ff0000, -0.025em -0.05em 0 #00ff00, 0.025em 0.05em 0 #0000ff;
+            animation: glitch 500ms infinite;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 #ff0000, -0.025em -0.05em 0 #00ff00, 0.025em 0.05em 0 #0000ff; }
+            14% { text-shadow: 0.05em 0 0 #ff0000, -0.025em -0.05em 0 #00ff00, 0.025em 0.05em 0 #0000ff; }
+            15% { text-shadow: -0.05em -0.025em 0 #ff0000, 0.025em 0.025em 0 #00ff00, -0.05em -0.05em 0 #0000ff; }
+            49% { text-shadow: -0.05em -0.025em 0 #ff0000, 0.025em 0.025em 0 #00ff00, -0.05em -0.05em 0 #0000ff; }
+            50% { text-shadow: 0.025em 0.05em 0 #ff0000, 0.05em 0 0 #00ff00, 0 -0.05em 0 #0000ff; }
+            99% { text-shadow: 0.025em 0.05em 0 #ff0000, 0.05em 0 0 #00ff00, 0 -0.05em 0 #0000ff; }
+            100% { text-shadow: -0.025em 0 0 #ff0000, -0.025em -0.025em 0 #00ff00, -0.025em -0.05em 0 #0000ff; }
+        }
+
+        /* Pesan Mesin Tik */
+        .message {
+            font-size: 1.2rem;
+            max-width: 700px;
+            line-height: 1.6;
+            margin: 0 20px;
+            padding-right: 5px;
+            border-right: 2px solid #0f0;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+
+        /* Kedipan kursor */
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Responsif untuk HP */
+        @media (max-width: 600px) {
+            .glitch { font-size: 2.5rem; }
+            .message { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Area untuk hujan kode ala The Matrix -->
+    <canvas id="matrix"></canvas>
+
+    <!-- Konten Utama Halaman Hacked -->
+    <div class="content">
+        <div class="glitch" data-text="SYSTEM COMPROMISED">SYSTEM COMPROMISED</div>
+        <div class="message blink" id="typewriter"></div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. EFEK HUJAN KODE (MATRIX BACKGROUND)
+        // ==========================================
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Karakter yang akan berjatuhan
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*<>[]{}';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        // Set array awal
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function drawMatrix() {
+            // Efek fading agar teks sebelumnya menjadi redup perlahan
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#0F0'; // Warna teks hijau
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                // Kembalikan ke atas secara acak setelah mencapai bawah
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35); // Kecepatan hujan kode
+
+        // ==========================================
+        // 2. EFEK TEKS MESIN TIK (TYPEWRITER)
+        // ==========================================
+        const textToType = "Greetings, Admin.\n\nYour security protocols were an illusion. We have successfully bypassed the firewall and gained root access to this server.\n\nDo not attempt to trace us. Consider this a friendly warning to patch your vulnerabilities before someone with malicious intent finds them.\n\nWe are anonymous.\nWe are legion.\nExpect us.";
+        const typewriterElement = document.getElementById('typewriter');
+        let index = 0;
+
+        function typeWriter() {
+            if (index < textToType.length) {
+                typewriterElement.innerHTML += textToType.charAt(index);
+                index++;
+                
+                // Variasi kecepatan ketikan agar terlihat seperti manusia asli
+                let typingSpeed = Math.random() * 50 + 20; 
+                setTimeout(typeWriter, typingSpeed);
+            }
+        }
+
+        // Mulai ngetik setelah jeda 1.5 detik
+        setTimeout(typeWriter, 1500);
+
+        // ==========================================
+        // 3. RESPONSIVE CANVAS
+        // ==========================================
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
