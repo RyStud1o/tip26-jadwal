@@ -3,128 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Jadwal TIP'26</title>
+    <title>Portal Akademik TIP ULM 26'</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Firebase SDK (Versi 8 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
 <body>
 
+    <!-- Preloader -->
+    <div id="preloader" class="preloader">
+        <img src="images (9).jpg" alt="Loading Logo ULM" class="pulse-logo">
+        <h2>Memuat Portal...</h2>
+    </div>
+
+    <!-- Welcome Pop-up -->
+    <div id="welcomeModal" class="modal-overlay">
+        <div class="modal-card welcome-card">
+            <img src="images (9).jpg" alt="ULM" width="80" style="margin-bottom: 15px;">
+            <h2>Selamat Datang!</h2>
+            <p>Di Portal Informasi Jadwal Perkuliahan<br>Teknologi Industri Pertanian ULM.</p>
+            <button id="closeWelcomeBtn" class="btn-primary">Lanjutkan ke Portal</button>
+        </div>
+    </div>
+
+    <!-- Modal Login Admin -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Akses Admin</h2>
+                <button class="close-btn" onclick="closeModal('loginModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="email" id="adminEmail" placeholder="Email Admin" class="modal-input">
+                <input type="password" id="adminPass" placeholder="Password" class="modal-input">
+                <button id="submitLoginBtn" class="btn-primary" style="width: 100%;">Masuk</button>
+                <p id="loginErrorMsg" class="error-msg"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form CRUD Jadwal -->
+    <div id="crudModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="crudTitle">Tambah Jadwal</h2>
+                <button class="close-btn" onclick="closeModal('crudModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="jadwalId">
+                <select id="inputHari" class="modal-input">
+                    <option value="Senin">Senin</option><option value="Selasa">Selasa</option>
+                    <option value="Rabu">Rabu</option><option value="Kamis">Kamis</option>
+                    <option value="Jumat">Jumat</option><option value="Sabtu">Sabtu</option>
+                </select>
+                <input type="text" id="inputWaktu" placeholder="Waktu (Cth: 09:50 - 11:30)" class="modal-input">
+                <input type="text" id="inputMatkul" placeholder="Nama Mata Kuliah" class="modal-input">
+                <input type="text" id="inputRuang" placeholder="Ruangan" class="modal-input">
+                <textarea id="inputDosen" placeholder="Dosen Pengampu (Pisahkan dengan koma)" class="modal-input" style="height: 80px; resize: none;"></textarea>
+                <button id="saveJadwalBtn" class="btn-primary" style="width: 100%;">Simpan Jadwal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigasi -->
     <header class="navbar">
         <div class="nav-content">
-            <div class="brand-container">
+            <div class="brand-container" onclick="goHome()" style="cursor:pointer;">
                 <img src="images (9).jpg" alt="Logo ULM" class="brand-logo">
                 <div class="brand-text">
-                    <span class="brand-title">Universitas Lambung Mangkurat</span>
-                    <span class="brand-subtitle">Prodi Teknologi Industri Pertanian</span>
+                    <span class="brand-title">Teknologi Industri Pertanian 26'</span>
+                    <span class="brand-subtitle">Fakultas Pertanian | Universitas Lambung Mangkurat</span>
                 </div>
             </div>
-            <button id="themeToggle" class="theme-btn" title="Ganti Tema">🌙</button>
+            <div class="nav-actions">
+                <button id="adminLoginBtn" class="btn-outline">Login Admin</button>
+                <button id="adminLogoutBtn" class="btn-outline" style="display: none;">Logout</button>
+            </div>
         </div>
     </header>
 
     <main class="container">
-        <!-- ================= DASHBOARD VIEW ================= -->
+        
+        <!-- DASHBOARD VIEW -->
         <div id="dashboardView" class="view-section active">
-            <div class="dashboard-header">
-                <h1>Halo, Mahasiswa TIP'26! 👋</h1>
-                <p>Selamat datang di Portal Jadwal TIP Angkatan 2026.</p>
+            <div class="page-header">
+                <h1>Dashboard Jadwal Perkuliahan TIP'26</h1>
+                <p>Pilih semester aktif untuk melihat jadwal.</p>
             </div>
 
-            <!-- Widget Jadwal Mendatang -->
-            <div class="upcoming-widget">
-                <div class="widget-header">
-                    <h3>⏳ Jadwal Kuliah Terdekat (Hari Ini)</h3>
-                </div>
-                <div id="upcomingClassContainer" class="widget-body">
-                    <!-- Diisi oleh JavaScript -->
-                </div>
+            <!-- Quick Links Widget -->
+            <div class="quick-links-container">
+                <a href="https://simari.ulm.ac.id/" target="_blank" class="quick-link-card">
+                    <span class="icon">🎓</span>
+                    <h3>Portal SIMARI</h3>
+                    <p>Sistem Informasi ULM Terintegrasi</p>
+                </a>
+                <a href="https://tip.ulm.ac.id/id/" target="_blank" class="quick-link-card">
+                    <span class="icon">🌾</span>
+                    <h3>Website TIP ULM</h3>
+                    <p>Informasi Prodi Teknologi Industri Pertanian</p>
+                </a>
             </div>
 
-            <div class="section-title-container">
-                <h2>Pilih Semester</h2>
-                <div class="line"></div>
-            </div>
-
+            <!-- Semester Selector -->
+            <h2 style="text-align: center; color: var(--ulm-green); margin-bottom: 20px;">Pilih Semester</h2>
             <div class="semester-grid">
                 <button class="semester-btn active" onclick="openSemester(1)">
                     <span class="sem-num">1</span>
                     <span class="sem-text">Semester 1</span>
                 </button>
-                <button class="semester-btn" onclick="openSemester(2)">
-                    <span class="sem-num">2</span>
-                    <span class="sem-text">Semester 2</span>
-                </button>
-                <button class="semester-btn" onclick="openSemester(3)">
-                    <span class="sem-num">3</span>
-                    <span class="sem-text">Semester 3</span>
-                </button>
-                <button class="semester-btn" onclick="openSemester(4)">
-                    <span class="sem-num">4</span>
-                    <span class="sem-text">Semester 4</span>
-                </button>
-                <button class="semester-btn" onclick="openSemester(5)">
-                    <span class="sem-num">5</span>
-                    <span class="sem-text">Semester 5</span>
-                </button>
-                <button class="semester-btn" onclick="openSemester(6)">
-                    <span class="sem-num">6</span>
-                    <span class="sem-text">Semester 6</span>
-                </button>
-                <button class="semester-btn" onclick="openSemester(7)">
-                    <span class="sem-num">7</span>
-                    <span class="sem-text">Semester 7</span>
-                </button>
-                <button class="semester-btn" onclick="openSemester(8)">
-                    <span class="sem-num">8</span>
-                    <span class="sem-text">Semester 8</span>
-                </button>
+                <!-- Generate tombol semester 2-8 -->
+                <script>
+                    for(let i=2; i<=8; i++) {
+                        document.write(`<button class="semester-btn" onclick="openSemester(${i})"><span class="sem-num">${i}</span><span class="sem-text">Semester ${i}</span></button>`);
+                    }
+                </script>
             </div>
         </div>
 
-        <!-- ================= SEMESTER 1 VIEW ================= -->
+        <!-- SCHEDULE VIEW -->
         <div id="scheduleView" class="view-section">
             <button class="back-btn" onclick="goHome()">⬅ Kembali ke Dashboard</button>
             
             <div class="page-header">
-                <h1>Jadwal Semester 1</h1>
-                <p>Kelas F - Semester Ganjil TA 2026/2027</p>
-                <span class="badge-date">24 Agustus – 11 Desember 2026</span>
+                <h1 id="semesterTitle">Jadwal Semester</h1>
+                <div class="badge-date">Tahun Ajaran 2026/2027</div>
+            </div>
+
+            <div id="adminPanel" class="admin-panel" style="display: none;">
+                <div class="admin-header">
+                    <h3>🛡️ Admin Control Panel</h3>
+                </div>
+                <div class="admin-controls">
+                    <button class="btn-primary" onclick="openAddModal()">+ Tambah Jadwal Manual</button>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <input type="file" id="uploadJson" accept=".json" class="file-input">
+                        <button id="btnUpload" class="btn-outline">Upload JSON</button>
+                    </div>
+                </div>
             </div>
 
             <div class="tools-container">
-                <input type="text" id="searchInput" class="search-bar" placeholder="Cari mata kuliah atau nama dosen...">
-                
+                <input type="text" id="searchInput" class="search-bar" placeholder="Cari mata kuliah atau dosen...">
                 <div class="filter-tabs" id="filterTabs">
-                    <button class="filter-btn active" data-hari="Semua">Semua Hari</button>
+                    <button class="filter-btn active" data-hari="Semua">Semua</button>
                     <button class="filter-btn" data-hari="Senin">Senin</button>
                     <button class="filter-btn" data-hari="Selasa">Selasa</button>
                     <button class="filter-btn" data-hari="Rabu">Rabu</button>
                     <button class="filter-btn" data-hari="Kamis">Kamis</button>
+                    <button class="filter-btn" data-hari="Jumat">Jumat</button>
                 </div>
             </div>
 
             <div class="schedule-grid" id="scheduleContainer">
-                <!-- Diisi oleh JavaScript -->
-            </div>
-        </div>
-
-        <!-- ================= COMING SOON VIEW ================= -->
-        <div id="comingSoonView" class="view-section">
-            <button class="back-btn" onclick="goHome()">⬅ Kembali ke Dashboard</button>
-            <div class="empty-state">
-                <h2 style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;">🚧 Coming Soon 🚧</h2>
-                <p>Jadwal perkuliahan untuk semester ini belum tersedia atau kamu belum memprogram KRS.</p>
+                <!-- Data di-render di sini -->
             </div>
         </div>
 
     </main>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2026 - Teknologi Industri Pertanian ULM 26'</p>
-        </div>
-    </footer>
-
     <script src="script.js"></script>
 </body>
 </html>

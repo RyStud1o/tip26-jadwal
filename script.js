@@ -1,175 +1,269 @@
-const jadwalData = [
-    { hari: "Senin", waktu: "09:50 - 11:30", matkul: "Kimia Industri Pertanian", ruang: "Ruang Culan", dosen: ["TANWIRUL MILLATI *", "RINI HUSTIANY", "SUSI"] },
-    { hari: "Senin", waktu: "14:50 - 16:30", matkul: "Pengantar Teknologi Pertanian", ruang: "Ruang Culan", dosen: ["AGUNG NUGROHO *", "TANWIRUL MILLATI", "HISYAM MUSTAFA AL HAKIM"] },
-    { hari: "Selasa", waktu: "08:00 - 09:40", matkul: "Matematika", ruang: "Ruang Culan", dosen: ["FADHILAH DHANI SANTIKA FALAH", "NISA MUFIDAH"] },
-    { hari: "Selasa", waktu: "09:50 - 11:30", matkul: "Praktikum Kimia Industri Pertanian", ruang: "Lab. TIP", dosen: ["TANWIRUL MILLATI *", "RINI HUSTIANY", "SUSI"] },
-    { hari: "Selasa", waktu: "14:50 - 16:30", matkul: "Pengantar Ilmu Ekonomi", ruang: "Ruang Kenanga", dosen: ["NINA BUDIWATI *", "SORAYA NOORMALASARI"] },
-    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Kristen Protestan", ruang: "Ruang Kapul 1", dosen: ["Pdt. Dr. Keloso S Ugak, S.Th. *"] },
-    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Kristen Katolik", ruang: "Ruang Kapul 2", dosen: ["Drs. Petrus B. Kolin *"] },
-    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Hindu", ruang: "Ruang Kalalayu", dosen: ["Nyoman Sukadane *"] },
-    { hari: "Selasa", waktu: "16:40 - 18:20", matkul: "Pendidikan Agama Budha", ruang: "Ruang Kasturi 2", dosen: ["Narmin, S.Ag. *"] },
-    { hari: "Rabu", waktu: "09:50 - 11:30", matkul: "Dasar Rekayasa Bioproses", ruang: "Ruang Sarigading", dosen: ["ALIA RAHMI *", "LYA AGUSTINA", "NOVIANTI ADI ROHMANNA"] },
-    { hari: "Rabu", waktu: "13:00 - 14:40", matkul: "Pancasila", ruang: "Ruang Pampaken", dosen: ["HABIBAH PIDI ROHMATU *", "SUROTO"] },
-    { hari: "Kamis", waktu: "08:00 - 09:40", matkul: "Pendidikan Agama Islam", ruang: "Ruang Pampaken", dosen: ["MUHAMMAD ROSDAL TAWAKKAL *"] },
-    { hari: "Kamis", waktu: "13:00 - 14:40", matkul: "Praktikum Matematika", ruang: "Ruang Sarigading", dosen: ["FADHILAH DHANI SANTIKA FALAH", "NISA MUFIDAH"], clash: true },
-    { hari: "Kamis", waktu: "16:40 - 18:20", matkul: "Bahasa Indonesia", ruang: "Ruang Pampaken", dosen: ["ISNU WAHYONO *"] }
-];
+// ==========================================
+// 1. INISIALISASI FIREBASE
+// ==========================================
+const firebaseConfig = {
+    apiKey: "AIzaSyCg4clVORAI-whSKgUg6R4K-VW5v-_gwHo",
+    authDomain: "tip26-jadwal.firebaseapp.com",
+    databaseURL: "https://tip26-jadwal-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "tip26-jadwal",
+    storageBucket: "tip26-jadwal.firebasestorage.app",
+    messagingSenderId: "673513274494",
+    appId: "1:673513274494:web:f6173553726b40eb282c2f"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-// Logika Navigasi View
-function showView(viewId) {
-    document.querySelectorAll('.view-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    document.getElementById(viewId).classList.add('active');
+let jadwals = [];
+let currentSemester = 1;
+let isAdmin = false;
+
+// ==========================================
+// 2. SISTEM UI (PRELOADER, MODAL, NAVIGASI)
+// ==========================================
+window.onload = () => {
+    setTimeout(() => {
+        document.getElementById('preloader').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('preloader').style.display = 'none';
+            
+            // Tampilkan welcome popup jika belum pernah ditutup
+            if(!sessionStorage.getItem('welcomeShown')) {
+                document.getElementById('welcomeModal').classList.add('active');
+            }
+        }, 500);
+    }, 1000);
+};
+
+document.getElementById('closeWelcomeBtn').addEventListener('click', () => {
+    document.getElementById('welcomeModal').classList.remove('active');
+    sessionStorage.setItem('welcomeShown', 'true');
+});
+
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// Navigasi Dashboard vs Jadwal
+function showView(id) {
+    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
 
-function goHome() {
-    showView('dashboardView');
-    updateUpcomingClass();
-}
+function goHome() { showView('dashboardView'); }
 
-function openSemester(semNumber) {
-    if(semNumber === 1) {
-        showView('scheduleView');
-        renderSchedule(); // render ulang tabel jika perlu
-    } else {
-        showView('comingSoonView');
-    }
-}
-
-// Logika Widget Jadwal Mendatang
-function updateUpcomingClass() {
-    const now = new Date();
-    const daysArr = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-    const currentDayStr = daysArr[now.getDay()];
-    const currentTime = now.getHours() * 60 + now.getMinutes(); // Waktu dalam menit
-    const container = document.getElementById('upcomingClassContainer');
-    
-    // Cari jadwal khusus hari ini
-    const todayClasses = jadwalData.filter(item => item.hari === currentDayStr);
-    
-    if (todayClasses.length === 0) {
-        container.innerHTML = `<p class="widget-empty">Tidak ada jadwal perkuliahan untuk hari ini. Waktunya istirahat atau nugas!</p>`;
+function openSemester(sem) {
+    if(sem !== 1) {
+        alert("Penyusunan jadwal untuk Semester " + sem + " belum diatur oleh admin website. Silakan hubungi admin untuk informasi lebih lanjut.");
         return;
     }
-
-    // Urutkan jadwal hari ini berdasarkan jam mulai
-    todayClasses.sort((a, b) => a.waktu.localeCompare(b.waktu));
-    
-    // Cari kelas yang jam mulainya masih lebih besar dari waktu sekarang
-    let nextClass = null;
-    for (let i = 0; i < todayClasses.length; i++) {
-        let startTimeStr = todayClasses[i].waktu.split(" - ")[0]; // Ambil jam awal misal "09:50"
-        let [hours, mins] = startTimeStr.split(":");
-        let startMinutes = parseInt(hours) * 60 + parseInt(mins);
-        
-        if (startMinutes > currentTime) {
-            nextClass = todayClasses[i];
-            break;
-        }
-    }
-
-    if (nextClass) {
-        container.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <div>
-                    <h4 style="font-size: 1.2rem; color: var(--primary); margin-bottom: 5px;">${nextClass.matkul}</h4>
-                    <p style="color: var(--text-muted); font-weight: 600;">🕒 ${nextClass.waktu} &nbsp;|&nbsp; 📍 ${nextClass.ruang}</p>
-                </div>
-                <button onclick="openSemester(1)" style="background: var(--bg-main); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 8px; cursor: pointer; color: var(--text-main); font-weight: bold;">Lihat Detail</button>
-            </div>
-        `;
-    } else {
-        container.innerHTML = `<p class="widget-empty">Seluruh kelas hari ini sudah selesai atau sedang berlangsung. Hebat!</p>`;
-    }
+    currentSemester = sem;
+    document.getElementById('semesterTitle').innerText = "Jadwal Semester " + sem;
+    showView('scheduleView');
+    fetchJadwal();
 }
 
-// Logika Render Tabel Semester 1
-const scheduleContainer = document.getElementById('scheduleContainer');
+// ==========================================
+// 3. AUTENTIKASI ADMIN
+// ==========================================
+document.getElementById('adminLoginBtn').addEventListener('click', () => {
+    openModal('loginModal');
+    document.getElementById('loginErrorMsg').innerText = '';
+});
+
+document.getElementById('submitLoginBtn').addEventListener('click', () => {
+    const email = document.getElementById('adminEmail').value;
+    const pass = document.getElementById('adminPass').value;
+    auth.signInWithEmailAndPassword(email, pass).then(() => {
+        closeModal('loginModal');
+        document.getElementById('adminEmail').value = ''; document.getElementById('adminPass').value = '';
+    }).catch(err => document.getElementById('loginErrorMsg').innerText = "Gagal: " + err.message);
+});
+
+document.getElementById('adminLogoutBtn').addEventListener('click', () => auth.signOut());
+
+auth.onAuthStateChanged(user => {
+    isAdmin = !!user;
+    document.getElementById('adminPanel').style.display = isAdmin ? 'block' : 'none';
+    document.getElementById('adminLoginBtn').style.display = isAdmin ? 'none' : 'inline-block';
+    document.getElementById('adminLogoutBtn').style.display = isAdmin ? 'inline-block' : 'none';
+    renderSchedule(); // Render ulang untuk memunculkan tombol Edit/Delete
+});
+
+// ==========================================
+// 4. LOGIKA CLASH & RENDER DATA
+// ==========================================
+function timeToMinutes(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
+
+function checkClashes(data) {
+    let clashIds = new Set();
+    for (let i = 0; i < data.length; i++) {
+        for (let j = i + 1; j < data.length; j++) {
+            if (data[i].hari === data[j].hari) {
+                try {
+                    const [startA, endA] = data[i].waktu.split(' - ').map(timeToMinutes);
+                    const [startB, endB] = data[j].waktu.split(' - ').map(timeToMinutes);
+                    
+                    if (startA < endB && endA > startB) {
+                        // LOGIKA PENGECUALIAN: Jika keduanya mengandung kata 'Agama', abaikan bentrok
+                        const isA_Agama = data[i].matkul.toLowerCase().includes('agama');
+                        const isB_Agama = data[j].matkul.toLowerCase().includes('agama');
+                        
+                        if (!(isA_Agama && isB_Agama)) {
+                            clashIds.add(data[i].id);
+                            clashIds.add(data[j].id);
+                        }
+                    }
+                } catch (e) {}
+            }
+        }
+    }
+    return clashIds;
+}
+
+const container = document.getElementById('scheduleContainer');
 const searchInput = document.getElementById('searchInput');
-const filterButtons = document.querySelectorAll('.filter-btn');
 let currentFilter = 'Semua';
-let searchQuery = '';
+
+function fetchJadwal() {
+    // Kita filter data di database yang field semesternya sesuai
+    db.collection("jadwal").where("semester", "==", currentSemester).onSnapshot(snap => {
+        jadwals = [];
+        snap.forEach(doc => jadwals.push({ id: doc.id, ...doc.data() }));
+        renderSchedule();
+    });
+}
 
 function renderSchedule() {
-    scheduleContainer.innerHTML = '';
-    const filteredData = jadwalData.filter(item => {
+    container.innerHTML = '';
+    let filtered = jadwals.filter(item => {
         const matchHari = currentFilter === 'Semua' || item.hari === currentFilter;
-        const queryLower = searchQuery.toLowerCase();
-        const matchSearch = item.matkul.toLowerCase().includes(queryLower) || 
-                            item.dosen.some(d => d.toLowerCase().includes(queryLower));
+        const q = searchInput.value.toLowerCase();
+        const strDosen = Array.isArray(item.dosen) ? item.dosen.join(' ') : item.dosen;
+        const matchSearch = item.matkul.toLowerCase().includes(q) || strDosen.toLowerCase().includes(q);
         return matchHari && matchSearch;
     });
 
-    if (filteredData.length === 0) {
-        scheduleContainer.innerHTML = '<div class="empty-state">Mata kuliah atau dosen tidak ditemukan.</div>';
+    if (filtered.length === 0) {
+        container.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:40px;">Tidak ada jadwal.</p>`;
         return;
     }
 
-    filteredData.sort((a, b) => {
-        if (a.hari === b.hari) return a.waktu.localeCompare(b.waktu);
-        return 0;
+    const hariOrder = { "Senin":1, "Selasa":2, "Rabu":3, "Kamis":4, "Jumat":5, "Sabtu":6 };
+    filtered.sort((a,b) => {
+        if(hariOrder[a.hari] !== hariOrder[b.hari]) return hariOrder[a.hari] - hariOrder[b.hari];
+        return a.waktu.localeCompare(b.waktu);
     });
 
-    filteredData.forEach(item => {
-        const dosenList = item.dosen.map(d => `<p>${d}</p>`).join('');
-        const clashBadge = item.clash ? `<div class="clash-warning">⚠️ Waktu bentrok di portal</div>` : '';
-        const cardHTML = `
+    const clashes = checkClashes(filtered);
+
+    filtered.forEach(item => {
+        let warnHTML = clashes.has(item.id) ? `<div class="clash-warning">⚠️ Bertabrakan dengan jadwal lain</div>` : '';
+        let dosenStr = Array.isArray(item.dosen) ? item.dosen.join('<br>') : item.dosen;
+        
+        let adminBtns = isAdmin ? `
+            <div class="admin-actions-card">
+                <button class="btn-edit" onclick="editJadwal('${item.id}')">Edit</button>
+                <button class="btn-danger" onclick="deleteJadwal('${item.id}')">Hapus</button>
+            </div>
+        ` : '';
+
+        container.innerHTML += `
             <div class="card">
                 <div class="card-header">
-                    <div class="time">🕒 ${item.waktu}</div>
-                    <div class="room-badge">${item.ruang}</div>
+                    <span class="time">🕒 ${item.waktu}</span>
+                    <span class="room-badge">${item.ruang}</span>
                 </div>
                 <div class="subject-info">
                     <div class="day-text">${item.hari}</div>
                     <h3>${item.matkul}</h3>
                 </div>
-                <div class="lecturers">
-                    <strong>Dosen Pengampu:</strong>
-                    ${dosenList}
-                </div>
-                ${clashBadge}
+                <div class="lecturers">${dosenStr}</div>
+                ${warnHTML}
+                ${adminBtns}
             </div>
         `;
-        scheduleContainer.innerHTML += cardHTML;
     });
 }
 
-// Event Listeners
-filterButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        filterButtons.forEach(b => b.classList.remove('active'));
+// Fitur Pencarian & Filter
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         e.target.classList.add('active');
         currentFilter = e.target.getAttribute('data-hari');
         renderSchedule();
     });
 });
+searchInput.addEventListener('input', renderSchedule);
 
-searchInput.addEventListener('input', (e) => {
-    searchQuery = e.target.value;
-    renderSchedule();
-});
-
-// Fitur Dark Mode
-const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', () => {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    if (isDark) {
-        document.documentElement.removeAttribute('data-theme');
-        themeToggle.textContent = '🌙';
-        localStorage.setItem('theme', 'light');
-    } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        themeToggle.textContent = '☀️';
-        localStorage.setItem('theme', 'dark');
-    }
-});
-
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    themeToggle.textContent = '☀️';
+// ==========================================
+// 5. FITUR CRUD ADMIN (TAMBAH, EDIT, HAPUS)
+// ==========================================
+function openAddModal() {
+    document.getElementById('crudTitle').innerText = "Tambah Jadwal Baru";
+    document.getElementById('jadwalId').value = "";
+    document.getElementById('inputMatkul').value = "";
+    document.getElementById('inputRuang').value = "";
+    document.getElementById('inputWaktu').value = "";
+    document.getElementById('inputDosen').value = "";
+    openModal('crudModal');
 }
 
-// Inisialisasi awal saat halaman dibuka
-updateUpcomingClass();
+function editJadwal(id) {
+    const item = jadwals.find(j => j.id === id);
+    if(!item) return;
+    document.getElementById('crudTitle').innerText = "Edit Jadwal";
+    document.getElementById('jadwalId').value = item.id;
+    document.getElementById('inputHari').value = item.hari;
+    document.getElementById('inputWaktu').value = item.waktu;
+    document.getElementById('inputMatkul').value = item.matkul;
+    document.getElementById('inputRuang').value = item.ruang;
+    document.getElementById('inputDosen').value = Array.isArray(item.dosen) ? item.dosen.join(", ") : item.dosen;
+    openModal('crudModal');
+}
+
+function deleteJadwal(id) {
+    if(confirm("Yakin ingin menghapus jadwal ini?")) {
+        db.collection("jadwal").doc(id).delete();
+    }
+}
+
+document.getElementById('saveJadwalBtn').addEventListener('click', () => {
+    const id = document.getElementById('jadwalId').value;
+    const data = {
+        semester: currentSemester,
+        hari: document.getElementById('inputHari').value,
+        waktu: document.getElementById('inputWaktu').value,
+        matkul: document.getElementById('inputMatkul').value,
+        ruang: document.getElementById('inputRuang').value,
+        dosen: document.getElementById('inputDosen').value.split(',').map(s => s.trim())
+    };
+
+    if(id) { db.collection("jadwal").doc(id).update(data); } 
+    else { db.collection("jadwal").add(data); }
+    
+    closeModal('crudModal');
+});
+
+// Fitur Upload JSON
+document.getElementById('btnUpload').addEventListener('click', () => {
+    const file = document.getElementById('uploadJson').files[0];
+    if (!file) return alert("Pilih file JSON!");
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const newData = JSON.parse(e.target.result);
+        const batch = db.batch();
+        const oldDocs = await db.collection("jadwal").where("semester", "==", currentSemester).get();
+        oldDocs.forEach(doc => batch.delete(doc.ref));
+        
+        newData.forEach(item => {
+            const newRef = db.collection("jadwal").doc();
+            item.semester = currentSemester; // Paksa masuk ke semester aktif
+            batch.set(newRef, item);
+        });
+        await batch.commit();
+        alert("Upload selesai!");
+        document.getElementById('uploadJson').value = '';
+    };
+    reader.readAsText(file);
+});
