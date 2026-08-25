@@ -129,18 +129,9 @@
                 <button class="semester-btn active" onclick="openSemester(1)">
                     <span class="sem-num">1</span>
                     <span class="sem-text">Semester 1</span>
-                </button>
-                <button class="semester-btn active" onclick="openSemester(2)">
-                    <span class="sem-num">2</span>
-                    <span class="sem-text">Semester 2</span>
-                </button>
-                <button class="semester-btn active" onclick="openSemester(3)">
-                    <span class="sem-num">3</span>
-                    <span class="sem-text">Semester 3</span>
-                </button>
-                <!-- Generate tombol semester 3-8 -->
+                <!-- Generate tombol semester 2-8 -->
                 <script>
-                    for(let i=4; i<=8; i++) {
+                    for(let i=2; i<=8; i++) {
                         document.write(`<button class="semester-btn" onclick="openSemester(${i})"><span class="sem-num">${i}</span><span class="sem-text">Semester ${i}</span></button>`);
                     }
                 </script>
