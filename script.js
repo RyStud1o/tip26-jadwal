@@ -111,7 +111,7 @@ function renderDashboardSemesters() {
                 <div style="display:flex; flex-direction:column;">
                     <span class="sem-text">Semester ${i}</span>
                     <span style="font-size: 0.75rem; color: ${isOpen ? 'var(--ulm-green)' : '#ef4444'}; font-weight: 700;">
-                        ${isOpen ? '● Dibuka' : '🔒 Belum Diatur'}
+                        ${isOpen ? '🔓 Terbuka' : '🔒 Terkunci'}
                     </span>
                 </div>
             </button>
@@ -122,7 +122,7 @@ function renderDashboardSemesters() {
 function openSemester(sem) {
     const isOpen = semestersStatus[sem] === true;
     if(!isOpen && !isAdmin) {
-        showCustomAlert("Akses Ditutup", `Penyusunan jadwal untuk Semester ${sem} belum diatur oleh program studi.`);
+        showCustomAlert("Akses Terkunci", `Penyusunan jadwal untuk Semester ${sem} belum diatur oleh admin website.`);
         return;
     }
     
@@ -151,7 +151,7 @@ function updateAdminSemesterControl() {
 document.getElementById('toggleSemesterBtn').addEventListener('click', () => {
     semestersStatus[currentSemester] = !semestersStatus[currentSemester];
     db.collection("pengaturan").doc("semesterStatus").set(semestersStatus).then(() => {
-        showCustomAlert("Berhasil", `Status Semester ${currentSemester} berhasil diubah secara real-time!`);
+        showCustomAlert("Berhasil", `Status Semester ${currentSemester} berhasil diubah!`);
     });
 });
 
