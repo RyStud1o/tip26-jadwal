@@ -60,7 +60,7 @@ function showView(id) {
 function goHome() { showView('dashboardView'); }
 
 function openSemester(sem) {
-    if(sem !== 1 !== 2) {
+    if(sem !== 2) {
         alert("Penyusunan jadwal untuk Semester " + sem + " belum diatur oleh admin website. Silakan hubungi admin untuk informasi lebih lanjut.");
         return;
     }
