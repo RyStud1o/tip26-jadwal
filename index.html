@@ -130,9 +130,13 @@
                     <span class="sem-num">1</span>
                     <span class="sem-text">Semester 1</span>
                 </button>
-                <!-- Generate tombol semester 2-8 -->
+                <button class="semester-btn active" onclick="openSemester(2)">
+                    <span class="sem-num">2</span>
+                    <span class="sem-text">Semester 2</span>
+                </button>
+                <!-- Generate tombol semester 3-8 -->
                 <script>
-                    for(let i=2; i<=8; i++) {
+                    for(let i=3; i<=8; i++) {
                         document.write(`<button class="semester-btn" onclick="openSemester(${i})"><span class="sem-num">${i}</span><span class="sem-text">Semester ${i}</span></button>`);
                     }
                 </script>
@@ -150,7 +154,7 @@
 
             <div id="adminPanel" class="admin-panel" style="display: none;">
                 <div class="admin-header">
-                    <h3>🛡️ Admin Control Panel</h3>
+                    <h3>Pengaturan Jadwal Perkuliahan</h3>
                 </div>
                 <div class="admin-controls">
                     <button class="btn-primary" onclick="openAddModal()">+ Tambah Jadwal Manual</button>
