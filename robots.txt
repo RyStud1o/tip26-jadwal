@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rystud1o.github.io/tip26-jadwal/sitemap.xml
