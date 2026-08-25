@@ -134,9 +134,13 @@
                     <span class="sem-num">2</span>
                     <span class="sem-text">Semester 2</span>
                 </button>
+                <button class="semester-btn active" onclick="openSemester(3)">
+                    <span class="sem-num">3</span>
+                    <span class="sem-text">Semester 3</span>
+                </button>
                 <!-- Generate tombol semester 3-8 -->
                 <script>
-                    for(let i=3; i<=8; i++) {
+                    for(let i=4; i<=8; i++) {
                         document.write(`<button class="semester-btn" onclick="openSemester(${i})"><span class="sem-num">${i}</span><span class="sem-text">Semester ${i}</span></button>`);
                     }
                 </script>
@@ -149,7 +153,7 @@
             
             <div class="page-header">
                 <h1 id="semesterTitle">Jadwal Semester</h1>
-                <div class="badge-date">Tahun Ajaran 2026/2027</div>
+                <div class="badge-date" id="tahunAjaranText">Tahun Ajaran 2026/2027</div>
             </div>
 
             <div id="adminPanel" class="admin-panel" style="display: none;">
