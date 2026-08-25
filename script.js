@@ -60,8 +60,8 @@ function showView(id) {
 function goHome() { showView('dashboardView'); }
 
 function openSemester(sem) {
-    if(sem !== 1 && sem !== 2 && sem !== 3) {
-        alert("Penyusunan jadwal untuk Semester " + sem + " belum diatur oleh program studi.");
+    if(sem !== 1) {
+        alert("Penyusunan jadwal untuk Semester " + sem + " belum diatur oleh admin website.");
         return;
     }
     currentSemester = sem;
