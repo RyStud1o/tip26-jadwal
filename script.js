@@ -60,12 +60,19 @@ function showView(id) {
 function goHome() { showView('dashboardView'); }
 
 function openSemester(sem) {
-    if(sem !== 1) {
-        alert("Penyusunan jadwal untuk Semester " + sem + " belum diatur oleh admin website. Silakan hubungi admin untuk informasi lebih lanjut.");
+    if(sem !== 1 && sem !== 2 && sem !== 3) {
+        alert("Penyusunan jadwal untuk Semester " + sem + " belum diatur oleh program studi.");
         return;
     }
     currentSemester = sem;
     document.getElementById('semesterTitle').innerText = "Jadwal Semester " + sem;
+    const baseYear = 2026;
+    const yearOffset = Math.floor((sem - 1) / 2);
+    const startYear = baseYear + yearOffset;
+    const endYear = startYear + 1;
+    
+    // Tampilkan ke teks HTML
+    document.getElementById('tahunAjaranText').innerText = `Tahun Ajaran ${startYear}/${endYear}`;
     showView('scheduleView');
     fetchJadwal();
 }
